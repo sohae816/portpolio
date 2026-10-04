@@ -26,7 +26,7 @@
 ```
 이 폴더의 index.html을 GitHub Pages로 배포하고 싶어.
 1) git init 후 첫 커밋
-2) gh CLI로 public 저장소 생성(이름: fruit-market-note) 및 push
+2) gh CLI로 public 저장소 생성(이름: portpolio) 및 push
 3) GitHub Pages를 main 브랜치 root로 활성화
 4) 배포 URL이 열리는지 확인해서 알려줘
 ```
