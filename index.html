@@ -148,9 +148,14 @@
   .photo-grid { display: grid; gap: 6px; margin-bottom: 6px; grid-template-columns: 1fr; }
   .photo-grid.n2 { grid-template-columns: 1fr 1fr; }
   .photo-grid.n3 { grid-template-columns: repeat(3, 1fr); }
+  .photo-grid.n4 { grid-template-columns: repeat(4, 1fr); }
   .photo-grid .subcard-photo { width: 100%; margin-bottom: 0; cursor: zoom-in; }
-  .photo-grid.n2 .subcard-photo, .photo-grid.n3 .subcard-photo { height: 130px; object-fit: cover; max-height: none; }
-  @media (max-width: 760px) { .photo-grid.n3 { grid-template-columns: 1fr 1fr; } }
+  .photo-grid.n2 .subcard-photo { height: 130px; object-fit: cover; max-height: none; }
+  .photo-grid.n3 .subcard-photo, .photo-grid.n4 .subcard-photo { height: 105px; object-fit: cover; max-height: none; }
+  @media (max-width: 760px) {
+    .photo-grid.n4 { grid-template-columns: repeat(3, 1fr); }
+    .photo-grid.n3 .subcard-photo, .photo-grid.n4 .subcard-photo { height: 90px; }
+  }
   #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.88); display: none; align-items: center; justify-content: center; z-index: 100; padding: 16px; cursor: zoom-out; }
   #lightbox.show { display: flex; }
   #lightbox img { max-width: 100%; max-height: 100%; border-radius: 8px; }
@@ -664,7 +669,7 @@
       body = `<div class="subcard-field-val">${escapeHtml(s.text)}</div>`;
     } else if (s.type === "photo") {
       const pics = (s.photos && s.photos.length) ? s.photos : (s.photo ? [s.photo] : []);
-      body = `<div class="photo-grid n${Math.min(pics.length, 3)}">${pics.map(src => `<img class="subcard-photo" src="${src}" onclick="openLightbox(this.src)">`).join("")}</div>${s.caption ? `<div class="subcard-field-val">${escapeHtml(s.caption)}</div>` : ""}`;
+      body = `<div class="photo-grid n${Math.min(pics.length, 4)}">${pics.map(src => `<img class="subcard-photo" src="${src}" onclick="openLightbox(this.src)">`).join("")}</div>${s.caption ? `<div class="subcard-field-val">${escapeHtml(s.caption)}</div>` : ""}`;
     } else if (s.type === "trend") {
       body = `<span class="subcard-field-label">트렌드</span><div class="subcard-field-val">${escapeHtml(s.trendName)}</div>${s.insight ? `<span class="subcard-field-label">인사이트</span><div class="subcard-field-val">${escapeHtml(s.insight)}</div>` : ""}`;
     } else if (s.type === "data") {
@@ -935,6 +940,22 @@
     } catch(e) {}
   }
 
+  // ---- 기존 체크리스트에 새로 생긴 항목 채워넣기 (체크·메모는 그대로) ----
+  function migrateChecklists() {
+    const arr = loadArr("fm_days");
+    let changed = false;
+    arr.forEach(g => (g.subcards || []).forEach(sc => {
+      if (sc.type !== "checklist" || !Array.isArray(sc.items)) return;
+      CHECKLIST_ITEMS.forEach((label, i) => {
+        if (sc.items.some(it => it.label === label)) return;
+        const prevIdx = sc.items.findIndex(it => it.label === CHECKLIST_ITEMS[i - 1]);
+        sc.items.splice(prevIdx + 1, 0, { label, done: false, memo: "" });
+        changed = true;
+      });
+    }));
+    if (changed) saveArr("fm_days", arr);
+  }
+
   // ---- lightbox ----
   function openLightbox(src) {
     document.getElementById("lightbox-img").src = src;
@@ -995,6 +1016,7 @@
   try { const saved = localStorage.getItem("fm_lastTab"); if (saved) startTab = saved; } catch(e) {}
   showPage(startTab);
   seedAllTemplatesSample();
+  migrateChecklists();
   renderDays();
   renderMonthly();
   renderGlossary();
