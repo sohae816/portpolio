@@ -992,6 +992,7 @@
   let startTab = "pocket";
   try { const saved = localStorage.getItem("fm_lastTab"); if (saved) startTab = saved; } catch(e) {}
   showPage(startTab);
+  seedAllTemplatesSample();
   renderDays();
   renderMonthly();
   renderGlossary();
