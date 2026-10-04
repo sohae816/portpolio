@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>과일 시장 생각주머니</title>
+<title>과일 필드노트</title>
 <meta name="description" content="과일 시장 관찰을 쌓아가는 개인 노트">
 <meta name="theme-color" content="#1F8F5C">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%87%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%8E%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -190,7 +191,7 @@
 
 <div class="topbar">
   <div class="topbar-inner">
-    <div class="logo"><span class="logo-dot"></span><span class="wordmark">과일 시장 생각주머니</span></div>
+    <div class="logo"><span class="logo-dot"></span><span class="wordmark">과일 필드노트</span></div>
     <nav class="tabs" id="tabs"></nav>
   </div>
 </div>
@@ -765,7 +766,7 @@
       document.getElementById("exportText").value = `${month}에 해당하는 기록이 없어요.`;
       return;
     }
-    let text = `[${month} 과일 시장 생각주머니 기록]\n\n`;
+    let text = `[${month} 과일 필드노트 기록]\n\n`;
     groups.slice().reverse().forEach(g => {
       text += `■ ${g.date}${g.loc ? " · " + g.loc : ""}\n`;
       g.subcards.forEach(s => {
