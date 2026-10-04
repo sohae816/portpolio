@@ -104,6 +104,7 @@
   .pending-form { border: 1px solid var(--accent); border-radius: 12px; padding: 13px 15px; margin-bottom: 10px; background: var(--accent-soft); }
   .pending-form-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px; }
   .pending-form-top span { font-size: 12.5px; font-weight: 700; color: var(--accent); }
+  .pending-form-top span.form-status { font-size: 11.5px; font-weight: 500; color: var(--sub); }
   .pending-form-actions { display: flex; gap: 8px; margin-top: 8px; }
   .photo-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
   .photo-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--sub); border: 1px solid var(--line); background: var(--surface); padding: 7px 12px; border-radius: 20px; cursor: pointer; }
@@ -436,7 +437,8 @@
     renderDays();
   }
 
-  // openForms[groupId] = [ {instanceId, type}, ... ]  (메모리에만 존재, 새로고침하면 초기화됨)
+  // openForms[groupId] = [ {instanceId, type, subId, draft}, ... ]  (메모리에만 존재, 새로고침하면 초기화됨)
+  // 입력하는 대로 자동 저장되고, subId는 저장된 하위 카드 id, draft는 입력칸 현재 값
   let openForms = {};
 
   function addSelectedTemplates(groupId) {
@@ -460,9 +462,29 @@
     renderDays();
   }
 
-  function cancelPendingForm(groupId, instanceId) {
+  function findForm(groupId, instanceId) {
+    return (openForms[groupId] || []).find(f => f.instanceId === instanceId);
+  }
+  function removeForm(groupId, instanceId) {
     if (openForms[groupId]) openForms[groupId] = openForms[groupId].filter(f => f.instanceId !== instanceId);
     delete pendingPhotos[`${groupId}-${instanceId}`];
+  }
+  // 완료: 이미 자동 저장돼 있으니 입력칸만 닫고 카드로 보여줌
+  function closePendingForm(groupId, instanceId) {
+    flushAutosave(groupId, instanceId);
+    removeForm(groupId, instanceId);
+    renderDays();
+  }
+  // 지우기: 자동 저장된 하위 카드까지 삭제
+  function cancelPendingForm(groupId, instanceId) {
+    cancelAutosaveTimer(groupId, instanceId);
+    const form = findForm(groupId, instanceId);
+    if (form && form.subId) {
+      const arr = loadArr("fm_days");
+      const g = arr.find(x => x.id === groupId);
+      if (g) { g.subcards = g.subcards.filter(s => s.id !== form.subId); saveArr("fm_days", arr); }
+    }
+    removeForm(groupId, instanceId);
     renderDays();
   }
 
@@ -518,65 +540,101 @@
     }
     inputEl.value = "";
     refreshPhotoPreview(groupId, instanceId);
+    flushAutosave(groupId, instanceId);
   }
   function removePendingPhoto(groupId, instanceId, idx) {
     const key = `${groupId}-${instanceId}`;
     if (pendingPhotos[key]) pendingPhotos[key].splice(idx, 1);
     refreshPhotoPreview(groupId, instanceId);
+    flushAutosave(groupId, instanceId);
   }
 
-  function savePendingForm(groupId, instanceId, type) {
+  // 입력칸 값 모으기. ok가 false면 필수칸이 비어 있어 아직 카드로 저장하지 않음
+  const REQUIRED_HINT = {
+    note: "메모를 쓰면", photo: "사진을 넣으면", trend: "트렌드명을 쓰면", data: "확인한 데이터를 쓰면",
+    price: "상품명을 쓰면", shelf: "관찰 내용을 쓰면", sourcing: "아이디어 제목을 쓰면"
+  };
+  function collectForm(groupId, instanceId, type) {
     const key = `${groupId}-${instanceId}`;
-    let sub = { id: Date.now(), type };
-
-    function val(suffix) {
+    const val = suffix => {
       const el = document.getElementById(`f-${type}-${suffix}-${key}`);
       return el ? el.value.trim() : "";
-    }
-
+    };
+    const f = {};
+    let ok = false;
     if (type === "note") {
-      sub.text = val("text");
-      if (!sub.text) { toast("메모를 입력해주세요."); return; }
+      f.text = val("text"); ok = !!f.text;
     } else if (type === "photo") {
-      sub.photos = (pendingPhotos[key] || []).slice();
-      sub.caption = val("caption");
-      if (sub.photos.length === 0) { toast("사진을 한 장 이상 추가해주세요."); return; }
+      f.photos = (pendingPhotos[key] || []).slice(); f.caption = val("caption"); ok = f.photos.length > 0;
     } else if (type === "trend") {
-      sub.trendName = val("name");
-      sub.insight = val("insight");
-      if (!sub.trendName) { toast("트렌드명을 입력해주세요."); return; }
+      f.trendName = val("name"); f.insight = val("insight"); ok = !!f.trendName;
     } else if (type === "data") {
-      sub.dataNote = val("note");
-      sub.interpretation = val("interp");
-      if (!sub.dataNote) { toast("확인한 데이터를 입력해주세요."); return; }
+      f.dataNote = val("note"); f.interpretation = val("interp"); ok = !!f.dataNote;
     } else if (type === "price") {
-      sub.product = val("product");
-      sub.price = val("price");
-      sub.unit = val("unit");
-      sub.memo = val("memo");
-      if (!sub.product) { toast("상품명을 입력해주세요."); return; }
+      f.product = val("product"); f.price = val("price"); f.unit = val("unit"); f.memo = val("memo"); ok = !!f.product;
     } else if (type === "shelf") {
-      sub.corner = val("corner");
-      sub.observation = val("obs");
-      if (!sub.observation) { toast("관찰 내용을 입력해주세요."); return; }
+      f.corner = val("corner"); f.observation = val("obs"); ok = !!f.observation;
     } else if (type === "sourcing") {
-      sub.idea = val("idea");
-      sub.detail = val("detail");
-      if (!sub.idea) { toast("아이디어 제목을 입력해주세요."); return; }
+      f.idea = val("idea"); f.detail = val("detail"); ok = !!f.idea;
     }
-
-    const arr = loadArr("fm_days");
-    const g = arr.find(x => x.id === groupId);
-    if (g) g.subcards.push(sub);
-    if (!saveArr("fm_days", arr)) return;
-    delete pendingPhotos[key];
-    if (openForms[groupId]) openForms[groupId] = openForms[groupId].filter(f => f.instanceId !== instanceId);
-    renderDays();
+    return { f, ok };
   }
 
-  function renderFieldsForType(type, key, groupId, instanceId) {
+  // ---- 입력칸 자동 저장 (입력 멈추고 0.5초 뒤, 칸을 벗어날 때, 앱을 닫을 때) ----
+  const autosaveTimers = {}; // key -> { timer, groupId, instanceId }
+  function autosaveInput(groupId, instanceId) {
+    const key = `${groupId}-${instanceId}`;
+    cancelAutosaveTimer(groupId, instanceId);
+    autosaveTimers[key] = { groupId, instanceId, timer: setTimeout(() => flushAutosave(groupId, instanceId), 500) };
+  }
+  function cancelAutosaveTimer(groupId, instanceId) {
+    const key = `${groupId}-${instanceId}`;
+    if (autosaveTimers[key]) { clearTimeout(autosaveTimers[key].timer); delete autosaveTimers[key]; }
+  }
+  function flushAllAutosaves() {
+    Object.values(autosaveTimers).forEach(t => flushAutosave(t.groupId, t.instanceId));
+  }
+  function flushAutosave(groupId, instanceId) {
+    cancelAutosaveTimer(groupId, instanceId);
+    const form = findForm(groupId, instanceId);
+    if (!form) return;
+    const { f, ok } = collectForm(groupId, instanceId, form.type);
+    form.draft = f;
+    const arr = loadArr("fm_days");
+    const g = arr.find(x => x.id === groupId);
+    if (!g) return;
+    if (ok) {
+      const cur = form.subId && g.subcards.find(s => s.id === form.subId);
+      if (cur) Object.assign(cur, f);
+      else { form.subId = Date.now(); g.subcards.push({ id: form.subId, type: form.type, ...f }); }
+    } else if (form.subId) {
+      // 필수칸을 다 지우면 저장된 카드도 빼둠 (다시 쓰면 다시 저장)
+      g.subcards = g.subcards.filter(s => s.id !== form.subId);
+      form.subId = null;
+    } else {
+      setFormStatus(groupId, instanceId, form);
+      return;
+    }
+    saveArr("fm_days", arr);
+    setFormStatus(groupId, instanceId, form);
+  }
+  function formStatusText(form) {
+    return form.subId ? "✓ 자동 저장됨" : `${REQUIRED_HINT[form.type]} 자동 저장돼요`;
+  }
+  function setFormStatus(groupId, instanceId, form) {
+    const el = document.getElementById(`fs-${groupId}-${instanceId}`);
+    if (el) el.textContent = formStatusText(form);
+  }
+  window.addEventListener("pagehide", flushAllAutosaves);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flushAllAutosaves(); });
+
+  function attr(s) { return escapeHtml(s).replace(/"/g, "&quot;"); }
+  function renderFieldsForType(type, key, groupId, instanceId, d) {
+    d = d || {};
+    const v = name => attr(d[name] || "");
+    const t = name => escapeHtml(d[name] || "");
     if (type === "note") {
-      return `<div class="field"><textarea id="f-note-text-${key}" rows="2" placeholder="편하게 적어보세요"></textarea></div>`;
+      return `<div class="field"><textarea id="f-note-text-${key}" rows="2" placeholder="편하게 적어보세요">${t("text")}</textarea></div>`;
     }
     if (type === "photo") {
       return `
@@ -590,43 +648,43 @@
         </div>
         <div class="photo-count" id="photo-count-${key}">${photoCountText(groupId, instanceId)}</div>
         <div class="photo-strip" id="photo-preview-${key}">${photoPreviewHtml(groupId, instanceId)}</div>
-        <div class="field"><input type="text" id="f-photo-caption-${key}" placeholder="사진 설명 (선택)"></div>
+        <div class="field"><input type="text" id="f-photo-caption-${key}" placeholder="사진 설명 (선택)" value="${v("caption")}"></div>
       `;
     }
     if (type === "trend") {
       return `
-        <div class="field"><label>트렌드명</label><input type="text" id="f-trend-name-${key}" placeholder="예: 손질과일 소용량화"></div>
-        <div class="field"><label>떠오른 인사이트</label><textarea id="f-trend-insight-${key}" rows="2" placeholder="왜 그런 것 같은지, 어떤 의미인지"></textarea></div>
+        <div class="field"><label>트렌드명</label><input type="text" id="f-trend-name-${key}" placeholder="예: 손질과일 소용량화" value="${v("trendName")}"></div>
+        <div class="field"><label>떠오른 인사이트</label><textarea id="f-trend-insight-${key}" rows="2" placeholder="왜 그런 것 같은지, 어떤 의미인지">${t("insight")}</textarea></div>
       `;
     }
     if (type === "data") {
       return `
-        <div class="field"><label>확인한 데이터</label><textarea id="f-data-note-${key}" rows="2" placeholder="예: 네이버 데이터랩 검색량, 가격 추이 등"></textarea></div>
-        <div class="field"><label>해석 (선택)</label><textarea id="f-data-interp-${key}" rows="2" placeholder="이 데이터가 의미하는 것"></textarea></div>
+        <div class="field"><label>확인한 데이터</label><textarea id="f-data-note-${key}" rows="2" placeholder="예: 네이버 데이터랩 검색량, 가격 추이 등">${t("dataNote")}</textarea></div>
+        <div class="field"><label>해석 (선택)</label><textarea id="f-data-interp-${key}" rows="2" placeholder="이 데이터가 의미하는 것">${t("interpretation")}</textarea></div>
       `;
     }
     if (type === "price") {
       return `
         <div class="row2">
-          <div class="field"><label>상품명</label><input type="text" id="f-price-product-${key}"></div>
-          <div class="field"><label>가격</label><input type="text" id="f-price-price-${key}" placeholder="예: 12,900원"></div>
+          <div class="field"><label>상품명</label><input type="text" id="f-price-product-${key}" value="${v("product")}"></div>
+          <div class="field"><label>가격</label><input type="text" id="f-price-price-${key}" placeholder="예: 12,900원" value="${v("price")}"></div>
         </div>
         <div class="row2">
-          <div class="field"><label>용량/단위</label><input type="text" id="f-price-unit-${key}" placeholder="예: 500g"></div>
-          <div class="field"><label>메모 (선택)</label><input type="text" id="f-price-memo-${key}"></div>
+          <div class="field"><label>용량/단위</label><input type="text" id="f-price-unit-${key}" placeholder="예: 500g" value="${v("unit")}"></div>
+          <div class="field"><label>메모 (선택)</label><input type="text" id="f-price-memo-${key}" value="${v("memo")}"></div>
         </div>
       `;
     }
     if (type === "shelf") {
       return `
-        <div class="field"><label>코너/카테고리</label><input type="text" id="f-shelf-corner-${key}" placeholder="예: 손질과일 코너"></div>
-        <div class="field"><label>관찰 내용</label><textarea id="f-shelf-obs-${key}" rows="2" placeholder="SKU 수, 진열 위치, 면적 변화 등"></textarea></div>
+        <div class="field"><label>코너/카테고리</label><input type="text" id="f-shelf-corner-${key}" placeholder="예: 손질과일 코너" value="${v("corner")}"></div>
+        <div class="field"><label>관찰 내용</label><textarea id="f-shelf-obs-${key}" rows="2" placeholder="SKU 수, 진열 위치, 면적 변화 등">${t("observation")}</textarea></div>
       `;
     }
     if (type === "sourcing") {
       return `
-        <div class="field"><label>아이디어 제목</label><input type="text" id="f-sourcing-idea-${key}" placeholder="예: 전처리 샤인머스캣 소용량 팩"></div>
-        <div class="field"><label>내용 (선택)</label><textarea id="f-sourcing-detail-${key}" rows="2" placeholder="타겟 채널 / 가격대 / 예상 고객 등"></textarea></div>
+        <div class="field"><label>아이디어 제목</label><input type="text" id="f-sourcing-idea-${key}" placeholder="예: 전처리 샤인머스캣 소용량 팩" value="${v("idea")}"></div>
+        <div class="field"><label>내용 (선택)</label><textarea id="f-sourcing-detail-${key}" rows="2" placeholder="타겟 채널 / 가격대 / 예상 고객 등">${t("detail")}</textarea></div>
       `;
     }
     return "";
@@ -708,6 +766,7 @@
   }
 
   function renderDays() {
+    flushAllAutosaves(); // 다시 그리기 전에 쓰던 내용부터 저장
     const arr = loadArr("fm_days");
     const box = document.getElementById("dayList");
     if (arr.length === 0) { box.innerHTML = '<div class="empty big">아직 하루 카드가 없어요. 위에서 날짜를 정하고 만들어보세요.</div>'; return; }
@@ -721,17 +780,20 @@
       `).join("");
 
       const pending = openForms[g.id] || [];
+      // 작성 중인 입력칸으로 보이는 카드는 위 목록에서 빼서 두 번 안 보이게
+      const shown = g.subcards.filter(s => !pending.some(f => f.subId === s.id));
       const pendingHtml = pending.map(f => {
         const key = `${g.id}-${f.instanceId}`;
         return `
-          <div class="pending-form">
+          <div class="pending-form" oninput="autosaveInput(${g.id}, ${f.instanceId})" onfocusout="flushAutosave(${g.id}, ${f.instanceId})">
             <div class="pending-form-top">
               <span>${TEMPLATES[f.type].label} 작성 중</span>
+              <span class="form-status" id="fs-${key}">${formStatusText(f)}</span>
             </div>
-            ${renderFieldsForType(f.type, key, g.id, f.instanceId)}
+            ${renderFieldsForType(f.type, key, g.id, f.instanceId, f.draft)}
             <div class="pending-form-actions">
-              <button class="btn sm" onclick="savePendingForm(${g.id}, ${f.instanceId}, '${f.type}')">저장</button>
-              <button class="btn sm outline" onclick="cancelPendingForm(${g.id}, ${f.instanceId})">취소</button>
+              <button class="btn sm" onclick="closePendingForm(${g.id}, ${f.instanceId})">완료</button>
+              <button class="btn sm outline" onclick="cancelPendingForm(${g.id}, ${f.instanceId})">지우기</button>
             </div>
           </div>
         `;
@@ -744,7 +806,7 @@
             <button class="day-del ${deleteArmed === g.id ? 'armed' : ''}" onclick="deleteDay(${g.id})">${deleteArmed === g.id ? "정말 삭제" : "카드 삭제"}</button>
           </div>
           <div class="day-body">
-            ${g.subcards.length === 0 ? '<div class="empty">아직 추가한 내용이 없어요. 아래에서 템플릿을 체크하고 추가해보세요.</div>' : g.subcards.map(s => renderSubcard(g.id, s)).join("")}
+            ${shown.length === 0 && pending.length === 0 ? '<div class="empty">아직 추가한 내용이 없어요. 아래에서 템플릿을 체크하고 추가해보세요.</div>' : shown.map(s => renderSubcard(g.id, s)).join("")}
             ${pendingHtml}
             <div class="add-area">
               <div class="add-area-label">어떤 걸 추가할까요? (여러 개 체크 가능)</div>
