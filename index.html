@@ -180,7 +180,77 @@
   .entry-del:hover { color: var(--warn); }
   .entry-note { font-size: 13.5px; line-height: 1.65; white-space: pre-wrap; }
 
+
+  /* ---- chips (선택 버튼) ---- */
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { position: relative; }
+  .chip input { position: absolute; opacity: 0; pointer-events: none; }
+  .chip span { display: inline-block; font-size: 12.5px; font-weight: 600; color: var(--sub); border: 1px solid var(--line); background: var(--surface); padding: 6px 11px; border-radius: 20px; cursor: pointer; }
+  .chip input:checked + span { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+  .chip input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .kpi-inputs { display: grid; grid-template-columns: 1.4fr 0.8fr 1fr; gap: 6px; margin-bottom: 6px; }
+  .kpi-inputs input { width: 100%; font-family: "Noto Sans KR", sans-serif; font-size: 13px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
+  .field-hint { font-size: 11.5px; color: var(--faint); margin: -2px 0 6px 0; }
+
+  /* ---- badges / kpi tiles ---- */
+  .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: var(--line); color: var(--sub); white-space: nowrap; }
+  .badge.ok { background: var(--accent-soft); color: var(--accent); }
+  .badge.no { background: var(--warn-soft); color: var(--warn); }
+  .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 8px 0 10px 0; }
+  .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; min-width: 0; }
+  .kpi-val { font-size: 20px; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; line-height: 1.2; }
+  .kpi-val small { font-size: 12.5px; font-weight: 600; color: var(--sub); }
+  .kpi-lab { font-size: 11.5px; color: var(--sub); margin-top: 3px; line-height: 1.4; }
+  .kpi-note { font-size: 10.5px; color: var(--faint); margin-top: 2px; }
+
+  /* ---- data analysis subcard ---- */
+  .da-top { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+  .da-q { font-size: 14.5px; font-weight: 700; line-height: 1.5; margin-bottom: 3px; }
+  .da-meta { font-size: 12px; color: var(--sub); margin-bottom: 6px; }
+  .da-line { font-size: 13.5px; line-height: 1.6; margin-bottom: 4px; white-space: pre-wrap; }
+  .da-line b { color: var(--accent); }
+  .link-btn { font-family: "Noto Sans KR", sans-serif; font-size: 12.5px; font-weight: 700; color: var(--accent); background: var(--accent-soft); border: none; border-radius: 8px; padding: 7px 12px; cursor: pointer; margin-top: 6px; text-decoration: none; display: inline-block; }
+
+  /* ---- reports ---- */
+  .rp-item { display: block; width: 100%; text-align: left; font-family: inherit; color: inherit; cursor: pointer; }
+  .rp-item:hover { border-color: var(--accent); }
+  .rp-item-top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+  .rp-item h3 { margin: 0 0 4px 0; font-size: 15.5px; font-weight: 800; }
+  .rp-item p { margin: 6px 0 0 0; font-size: 13px; line-height: 1.6; }
+  .rp-back { background: none; border: none; color: var(--sub); font-family: inherit; font-size: 13px; cursor: pointer; padding: 0; margin-bottom: 14px; }
+  .rp-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+  .rp-title { font-size: 22px; font-weight: 800; margin: 0 0 6px 0; letter-spacing: -0.02em; }
+  .rp-meta { font-size: 12.5px; color: var(--sub); }
+  .rp-field { font-size: 12.5px; color: var(--sub); margin-top: 4px; }
+  .rp-qa { display: grid; grid-template-columns: 44px 1fr; gap: 8px 10px; font-size: 14px; line-height: 1.6; }
+  .rp-qa dt { font-size: 12px; font-weight: 700; color: var(--faint); padding-top: 2px; }
+  .rp-qa dd { margin: 0; }
+  .rp-qa dd.ans { font-weight: 700; }
+  .rp-h { margin: 0 0 10px 0; font-size: 14.5px; font-weight: 700; }
+  .rp-list { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.75; }
+  .rp-card details { font-size: 13px; color: var(--sub); }
+  .rp-card details + details { margin-top: 8px; }
+  .rp-card summary { cursor: pointer; font-weight: 700; color: var(--ink); font-size: 13.5px; }
+  .rp-card details ul { margin: 8px 0 0 0; padding-left: 18px; line-height: 1.7; }
+
+  /* ---- chart ---- */
+  .chart-wrap { position: relative; }
+  .chart-wrap svg { width: 100%; height: auto; display: block; touch-action: pan-y; }
+  .chart-legend { display: flex; gap: 14px; font-size: 12px; color: var(--sub); margin: 4px 0 2px 0; }
+  .chart-legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 5px; }
+  .chart-tip { position: absolute; top: 4px; pointer-events: none; background: var(--ink); color: var(--bg); font-size: 11.5px; line-height: 1.5; padding: 6px 9px; border-radius: 8px; white-space: nowrap; display: none; }
+  .chart-note { font-size: 11.5px; color: var(--faint); margin-top: 6px; line-height: 1.5; }
+  .chart-pick { margin-bottom: 8px; }
+
   @media (max-width: 760px) {
+    .kpi-grid { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+    .kpi { padding: 9px 9px; }
+    .kpi-val { font-size: 17px; }
+    .kpi-inputs { grid-template-columns: 1fr 1fr; }
+    .kpi-inputs input:first-child { grid-column: 1 / -1; }
+    .rp-title { font-size: 19px; }
+    .tab-btn { padding: 10px 7px; font-size: 13px; }
+    .topbar-inner { gap: 8px; }
     main { padding: 20px 16px 60px 16px; }
     .topbar { padding: 0 14px; }
     .logo span.wordmark { display: none; }
@@ -215,6 +285,11 @@
     </div>
 
     <div id="dayList"></div>
+  </section>
+
+  <!-- REPORTS -->
+  <section class="page" data-page="reports">
+    <div id="reportView"></div>
   </section>
 
   <!-- KNOWLEDGE -->
@@ -343,6 +418,7 @@
 <script>
   const TABS = [
     { id: "pocket", label: "오늘의 필드" },
+    { id: "reports", label: "분석 리포트" },
     { id: "knowledge", label: "MD 기본 지식" },
     { id: "monthly", label: "먼슬리 리포트" }
   ];
@@ -551,7 +627,7 @@
 
   // 입력칸 값 모으기. ok가 false면 필수칸이 비어 있어 아직 카드로 저장하지 않음
   const REQUIRED_HINT = {
-    note: "메모를 쓰면", photo: "사진을 넣으면", trend: "트렌드명을 쓰면", data: "확인한 데이터를 쓰면",
+    note: "메모를 쓰면", photo: "사진을 넣으면", trend: "트렌드명을 쓰면", data: "질문을 쓰면",
     price: "상품명을 쓰면", shelf: "관찰 내용을 쓰면", sourcing: "아이디어 제목을 쓰면"
   };
   function collectForm(groupId, instanceId, type) {
@@ -569,7 +645,7 @@
     } else if (type === "trend") {
       f.trendName = val("name"); f.insight = val("insight"); ok = !!f.trendName;
     } else if (type === "data") {
-      f.dataNote = val("note"); f.interpretation = val("interp"); ok = !!f.dataNote;
+      return collectDataForm(key, val);
     } else if (type === "price") {
       f.product = val("product"); f.price = val("price"); f.unit = val("unit"); f.memo = val("memo"); ok = !!f.product;
     } else if (type === "shelf") {
@@ -659,9 +735,7 @@
     }
     if (type === "data") {
       return `
-        <div class="field"><label>확인한 데이터</label><textarea id="f-data-note-${key}" rows="2" placeholder="예: 네이버 데이터랩 검색량, 가격 추이 등">${t("dataNote")}</textarea></div>
-        <div class="field"><label>해석 (선택)</label><textarea id="f-data-interp-${key}" rows="2" placeholder="이 데이터가 의미하는 것">${t("interpretation")}</textarea></div>
-      `;
+      ` + dataFieldsHtml(key, groupId, instanceId, d);
     }
     if (type === "price") {
       return `
@@ -732,7 +806,7 @@
     } else if (s.type === "trend") {
       body = `<span class="subcard-field-label">트렌드</span><div class="subcard-field-val">${escapeHtml(s.trendName)}</div>${s.insight ? `<span class="subcard-field-label">인사이트</span><div class="subcard-field-val">${escapeHtml(s.insight)}</div>` : ""}`;
     } else if (s.type === "data") {
-      body = `<span class="subcard-field-label">데이터</span><div class="subcard-field-val">${escapeHtml(s.dataNote)}</div>${s.interpretation ? `<span class="subcard-field-label">해석</span><div class="subcard-field-val">${escapeHtml(s.interpretation)}</div>` : ""}`;
+      body = renderDataCard(s);
     } else if (s.type === "price") {
       body = `<div class="subcard-field-val"><b>${escapeHtml(s.product)}</b> · ${escapeHtml(s.price || "")} ${s.unit ? "· " + escapeHtml(s.unit) : ""}</div>${s.memo ? `<div class="subcard-field-val">${escapeHtml(s.memo)}</div>` : ""}`;
     } else if (s.type === "shelf") {
@@ -837,7 +911,7 @@
         if (s.type === "note") text += s.text;
         else if (s.type === "photo") { const n = (s.photos && s.photos.length) || (s.photo ? 1 : 0); text += `(사진 ${n}장)${s.caption ? " " + s.caption : ""}`; }
         else if (s.type === "trend") text += `${s.trendName}${s.insight ? " / " + s.insight : ""}`;
-        else if (s.type === "data") text += `${s.dataNote}${s.interpretation ? " / " + s.interpretation : ""}`;
+        else if (s.type === "data") text += dataExportText(s);
         else if (s.type === "price") text += `${s.product} ${s.price || ""} ${s.unit || ""} ${s.memo || ""}`;
         else if (s.type === "shelf") text += `${s.corner ? s.corner + " - " : ""}${s.observation}`;
         else if (s.type === "sourcing") text += `${s.idea}${s.detail ? " / " + s.detail : ""}`;
@@ -990,7 +1064,7 @@
           { id: base + 2, type: "note", text: "평일 낮이라 한산한 편. 컵과일 코너 앞에서 1인 손님들이 꽤 멈춰서 봄. 가격 보고 내려놓는 사람도 있었음." },
           { id: base + 3, type: "photo", photo: svg, caption: "손질과일·컵과일 냉장 매대" },
           { id: base + 4, type: "trend", trendName: "소용량 컵과일 수요", insight: "1인가구가 '먹고 싶지만 손질·보관이 부담'이라 가격이 비싸도 소용량을 사는 것 같음. 가격 저항은 있어 보임." },
-          { id: base + 5, type: "data", dataNote: "네이버 데이터랩에서 '컵과일' 검색량을 최근 1년으로 조회 (예시)", interpretation: "여름철에 검색량이 올라갔다가 가을에 내려가는 계절 패턴이 보임. 계절성 고려한 운영 필요해 보임." },
+          { id: base + 5, type: "data", question: "'컵과일' 수요에 계절성이 있을까? (예시)", status: "분석 완료", sources: ["데이터랩"], target: "컵과일 검색량", period: "최근 1년", kpis: [{ label: "여름 피크 대비 가을", value: "-40%", note: "예시 수치" }], verdict: "맞음", conclusion: "여름에 검색량이 오르고 가을에 내려가는 계절 패턴이 보임", insight: "여름 시즌 SKU를 늘리고 가을엔 축소하는 운영 검토" },
           { id: base + 6, type: "price", product: "샤인머스캣", price: "16,900원", unit: "1kg", memo: "100g당 1,690원. 2+1 행사 적용 시 실질 단가는 더 내려감." },
           { id: base + 7, type: "shelf", corner: "컵과일 냉장 매대", observation: "SKU 약 8개. 매대 2단 중 아래 1단을 사용. 눈높이 칸에는 음료가 진열됨." },
           { id: base + 8, type: "sourcing", idea: "소포장 제철 과일 3종 믹스 컵", detail: "타겟: 편의점·오피스 상권 / 가격대: 3,900~4,900원 / 고객: 1인가구, 점심 후 디저트 수요 (가상 아이디어 예시)" }
@@ -1073,16 +1147,332 @@
     toast(`복원 완료: 하루 카드 ${addedGroups}개, 하위 카드 ${addedSubs}개, 리포트 ${m}개 추가`);
   }
 
+  // ---- 데이터 분석 카드 ----
+  const DA_STATUS = ["아이디어", "수집 중", "분석 완료"];
+  const DA_SOURCES = ["KAMIS", "가락시장", "데이터랩", "네이버쇼핑", "현장 기록", "기타"];
+  const DA_VERDICT = ["맞음", "일부 맞음", "틀림"];
+  function verdictBadge(v) {
+    if (!v) return "";
+    const cls = v === "맞음" ? "ok" : v === "틀림" ? "no" : "";
+    return `<span class="badge ${cls}">가설 ${v === "맞음" ? "○" : v === "틀림" ? "✕" : "△"} ${escapeHtml(v)}</span>`;
+  }
+  function kpiTiles(kpis) {
+    if (!kpis || !kpis.length) return "";
+    return `<div class="kpi-grid">${kpis.map(k => `
+      <div class="kpi">
+        <div class="kpi-val">${escapeHtml(k.value)}${k.unit ? `<small>${escapeHtml(k.unit)}</small>` : ""}</div>
+        <div class="kpi-lab">${escapeHtml(k.label)}</div>
+        ${k.note ? `<div class="kpi-note">${escapeHtml(k.note)}</div>` : ""}
+      </div>`).join("")}</div>`;
+  }
+  function chipsHtml(kind, name, options, selected, labelOf) {
+    const sel = Array.isArray(selected) ? selected : [selected];
+    return `<div class="chips">${options.map(o => `
+      <label class="chip"><input type="${kind}" name="${name}" value="${attr(o)}" ${sel.includes(o) ? "checked" : ""}><span>${escapeHtml(labelOf ? labelOf(o) : o)}</span></label>`).join("")}</div>`;
+  }
+  function dataFieldsHtml(key, groupId, instanceId, d) {
+    const v = name => attr(d[name] || "");
+    const k = d.kpis || [];
+    const kv = (i, f) => attr((k[i] && k[i][f]) || "");
+    const reportOpts = REPORTS.map(r => `<option value="${attr(r.id)}" ${d.reportId === r.id ? "selected" : ""}>${escapeHtml(r.title)}</option>`).join("");
+    return `
+      <div class="field"><label>질문 / 가설</label><input type="text" id="f-data-q-${key}" placeholder="예: 명절 수요로 제수용 과일값이 오를까?" value="${v("question")}"></div>
+      <div class="field"><label>진행 상태</label>${chipsHtml("radio", `f-data-status-${key}`, DA_STATUS, d.status || "아이디어")}</div>
+      <div class="field"><label>데이터 출처 (여러 개 가능)</label>${chipsHtml("checkbox", `f-data-src-${key}`, DA_SOURCES, d.sources || [])}</div>
+      <div class="row2">
+        <div class="field"><label>대상</label><input type="text" id="f-data-target-${key}" placeholder="예: 사과·배" value="${v("target")}"></div>
+        <div class="field"><label>기간</label><input type="text" id="f-data-period-${key}" placeholder="예: 2025·2026 8~10월" value="${v("period")}"></div>
+      </div>
+      <div class="field"><label>핵심 숫자 (최대 3개, 선택)</label>
+        <div class="field-hint">이름 · 값 · 비교/설명</div>
+        ${[0,1,2].map(i => `
+        <div class="kpi-inputs">
+          <input type="text" id="f-data-k${i}l-${key}" placeholder="예: 유통업체 지수" value="${kv(i, "label")}">
+          <input type="text" id="f-data-k${i}v-${key}" placeholder="61" value="${kv(i, "value")}">
+          <input type="text" id="f-data-k${i}c-${key}" placeholder="전통시장 81" value="${kv(i, "note")}">
+        </div>`).join("")}
+      </div>
+      <div class="field"><label>가설 결과</label>${chipsHtml("radio", `f-data-verdict-${key}`, DA_VERDICT, d.verdict || "")}</div>
+      <div class="field"><label>한 줄 결론</label><input type="text" id="f-data-concl-${key}" placeholder="예: 가격을 올린 게 아니라 행사가로 끌었다" value="${v("conclusion")}"></div>
+      <div class="field"><label>MD 시사점 (선택)</label><textarea id="f-data-insight-${key}" rows="2" placeholder="이 결과로 MD라면 무엇을 다르게 할지">${escapeHtml(d.insight || "")}</textarea></div>
+      <div class="field"><label>그래프·캡처 (선택)</label></div>
+      <div class="photo-row">
+        <label class="photo-btn">🖼️ 이미지 추가
+          <input type="file" accept="image/*" multiple onchange="handlePhotoSelect(${groupId}, ${instanceId}, this)">
+        </label>
+      </div>
+      <div class="photo-strip" id="photo-preview-${key}">${photoPreviewHtml(groupId, instanceId)}</div>
+      <span id="photo-count-${key}" hidden></span>
+      <div class="field"><label>분석 리포트 연결 (선택)</label>
+        <select id="f-data-report-${key}"><option value="">연결 안 함</option>${reportOpts}</select>
+      </div>
+    `;
+  }
+  function collectDataForm(key, val) {
+    const checked = name => Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(el => el.value);
+    const f = {
+      question: val("q"),
+      status: checked(`f-data-status-${key}`)[0] || "",
+      sources: checked(`f-data-src-${key}`),
+      target: val("target"),
+      period: val("period"),
+      kpis: [0,1,2].map(i => ({ label: val(`k${i}l`), value: val(`k${i}v`), note: val(`k${i}c`) })).filter(k => k.label || k.value),
+      verdict: checked(`f-data-verdict-${key}`)[0] || "",
+      conclusion: val("concl"),
+      insight: val("insight"),
+      photos: (pendingPhotos[key] || []).slice(),
+      reportId: val("report")
+    };
+    return { f, ok: !!f.question };
+  }
+  function renderDataCard(s) {
+    // 리포트에서 연결한 카드는 최신 리포트 요약으로 보여줌 (리포트를 고치면 같이 바뀜)
+    const linkedRep = s.linked && REPORTS.find(r => r.id === s.reportId);
+    if (linkedRep && linkedRep.card) s = { ...s, ...linkedRep.card };
+    // 예전 양식(데이터/해석)도 새 양식으로 보여줌
+    const q = s.question || s.dataNote || "";
+    const concl = s.conclusion || s.interpretation || "";
+    const meta = [(s.sources || []).join(" · "), s.target, s.period].filter(Boolean).join(" · ");
+    const pics = s.photos || [];
+    const rep = s.reportId && REPORTS.find(r => r.id === s.reportId);
+    return `
+      ${(s.status || s.verdict) ? `<div class="da-top">${s.status ? `<span class="badge">${escapeHtml(s.status)}</span>` : ""}${verdictBadge(s.verdict)}</div>` : ""}
+      <div class="da-q">${escapeHtml(q)}</div>
+      ${meta ? `<div class="da-meta">${escapeHtml(meta)}</div>` : ""}
+      ${kpiTiles(s.kpis)}
+      ${concl ? `<div class="da-line"><b>→</b> ${escapeHtml(concl)}</div>` : ""}
+      ${s.insight ? `<div class="da-line">💡 ${escapeHtml(s.insight)}</div>` : ""}
+      ${pics.length ? `<div class="photo-grid n${Math.min(pics.length, 4)}">${pics.map(src => `<img class="subcard-photo" src="${src}" onclick="openLightbox(this.src)">`).join("")}</div>` : ""}
+      ${rep ? `<button class="link-btn" onclick="openReport('${attr(rep.id)}')">📈 리포트 보기 · ${escapeHtml(rep.title)}</button>` : ""}
+    `;
+  }
+  function dataExportText(s) {
+    const q = s.question || s.dataNote || "";
+    const parts = [q];
+    const tags = [s.status, s.verdict && `가설 ${s.verdict}`].filter(Boolean).join(", ");
+    if (tags) parts[0] += ` (${tags})`;
+    const meta = [(s.sources || []).join("·"), s.target, s.period].filter(Boolean).join(" / ");
+    if (meta) parts.push(meta);
+    (s.kpis || []).forEach(k => parts.push(`${k.label} ${k.value}${k.note ? " (" + k.note + ")" : ""}`));
+    const concl = s.conclusion || s.interpretation;
+    if (concl) parts.push("결론: " + concl);
+    if (s.insight) parts.push("시사점: " + s.insight);
+    return parts.join(" / ");
+  }
+
+  // ---- 분석 리포트 (reports/*.json, 사이트에 공개되는 요약본) ----
+  let REPORTS = [];
+  const reportCache = {};
+  let currentReport = null;
+  async function loadReports() {
+    try {
+      const r = await fetch("reports/index.json", { cache: "no-cache" });
+      REPORTS = r.ok ? await r.json() : [];
+    } catch (e) { REPORTS = []; }
+    renderReportView();
+    renderDays();
+  }
+  function openReport(id) {
+    currentReport = id;
+    try { history.replaceState(null, "", id ? `#report/${id}` : location.pathname); } catch (e) {}
+    showPage("reports");
+    renderReportView();
+    window.scrollTo(0, 0);
+  }
+  async function renderReportView() {
+    const box = document.getElementById("reportView");
+    if (!currentReport) {
+      box.innerHTML = `
+        <div class="page-head">
+          <h1 class="page-title">분석 리포트</h1>
+          <p class="page-desc">현장에서 본 것을 공공 데이터로 확인해본 분석 결과예요.</p>
+        </div>
+        ${REPORTS.length ? REPORTS.map(r => `
+          <button class="card rp-item" onclick="openReport('${attr(r.id)}')">
+            <div class="rp-item-top"><h3>${escapeHtml(r.title)}</h3>${verdictBadge(r.verdict)}</div>
+            <div class="rp-meta">${escapeHtml(r.meta)} · ${escapeHtml(r.date)}</div>
+            <p>${escapeHtml(r.answer)}</p>
+          </button>`).join("") : '<div class="empty big">아직 공개된 리포트가 없어요.</div>'}`;
+      return;
+    }
+    let r = reportCache[currentReport];
+    if (!r) {
+      box.innerHTML = '<div class="empty">불러오는 중...</div>';
+      try {
+        const res = await fetch(`reports/${encodeURIComponent(currentReport)}.json`, { cache: "no-cache" });
+        if (!res.ok) throw new Error(res.status);
+        r = reportCache[currentReport] = await res.json();
+      } catch (e) {
+        box.innerHTML = `<button class="rp-back" onclick="openReport(null)">← 리포트 목록</button><div class="empty big">리포트를 불러오지 못했어요.</div>`;
+        return;
+      }
+    }
+    const list = items => `<ul class="rp-list">${items.map(x => `<li>${escapeHtml(x)}</li>`).join("")}</ul>`;
+    box.innerHTML = `
+      <button class="rp-back" onclick="openReport(null)">← 리포트 목록</button>
+      <div class="page-head">
+        <div class="rp-tags">${r.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("")}</div>
+        <h1 class="rp-title">${escapeHtml(r.title)}</h1>
+        <div class="rp-meta">${escapeHtml(r.meta)} · ${escapeHtml(r.date)}</div>
+        ${r.field ? `<div class="rp-field">📍 ${escapeHtml(r.field)}</div>` : ""}
+      </div>
+      <div class="card">
+        <dl class="rp-qa">
+          <dt>질문</dt><dd>${escapeHtml(r.question)}</dd>
+          <dt>답</dt><dd class="ans">${verdictBadge(r.verdict)} ${escapeHtml(r.answer)}</dd>
+        </dl>
+      </div>
+      ${kpiTiles(r.kpis)}
+      <div class="card">
+        <h3 class="rp-h" id="rp-chart-title"></h3>
+        <div class="chart-pick">${chipsHtml("radio", "rp-chart", r.charts.map(c => c.id), r.headline_chart, id => chartShortName(r.charts.find(c => c.id === id)))}</div>
+        <div id="rp-chart"></div>
+        <div class="chart-note">${escapeHtml(r.chart_note)}</div>
+      </div>
+      <div class="card"><h3 class="rp-h">주요 발견</h3>${list(r.findings)}</div>
+      <div class="card"><h3 class="rp-h">MD 시사점</h3>${list(r.implications)}</div>
+      <div class="card rp-card">
+        <details><summary>분석 방법</summary>${list(r.method).replace('class="rp-list"', "")}</details>
+        <details><summary>한계</summary>${list(r.limits).replace('class="rp-list"', "")}</details>
+      </div>
+      ${r.next ? `<p class="steps"><b>다음 분석</b> · ${escapeHtml(r.next)}</p>` : ""}
+      ${r.notebook ? `<a class="btn" href="${attr(r.notebook)}" target="_blank" rel="noopener">전체 분석 노트 보기 ↗</a>` : ""}
+      ${r.card ? `<div class="card rp-card" style="margin-top:18px;">
+        <details id="rp-link-box"><summary>🔗 내 필드 카드에 연결</summary>
+          <p class="steps" style="margin:8px 0 10px 0;">하루 카드를 고르면 그 카드에 이 리포트 요약이 📊 데이터 분석으로 자동 추가돼요. 기록처럼 이 기기에만 저장돼요.</p>
+          <div id="rp-link"></div>
+        </details>
+      </div>` : ""}
+    `;
+    if (r.card) renderLinkBox(r);
+    const draw = id => {
+      const c = r.charts.find(x => x.id === id) || r.charts[0];
+      document.getElementById("rp-chart-title").textContent = c.title;
+      drawLineChart(document.getElementById("rp-chart"), c);
+    };
+    box.querySelectorAll('input[name="rp-chart"]').forEach(el => el.addEventListener("change", () => draw(el.value)));
+    draw(r.headline_chart);
+    redrawChart = () => { const el = box.querySelector('input[name="rp-chart"]:checked'); if (document.getElementById("rp-chart")) draw(el ? el.value : r.headline_chart); };
+  }
+  let redrawChart = null, resizeTimer = null;
+  window.addEventListener("resize", () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => redrawChart && redrawChart(), 150); });
+  function renderLinkBox(r) {
+    const box = document.getElementById("rp-link");
+    if (!box) return;
+    const days = loadArr("fm_days");
+    if (!days.length) { box.innerHTML = '<div class="empty">오늘의 필드에서 하루 카드를 먼저 만들어주세요.</div>'; return; }
+    box.innerHTML = `<div class="tmpl-checklist">${days.map(g => {
+      const linked = g.subcards.some(sc => sc.type === "data" && sc.reportId === r.id);
+      return `<div class="tmpl-check-row" style="cursor:default;">
+        <span>${escapeHtml(g.date)}${g.loc ? " · " + escapeHtml(g.loc) : ""}</span>
+        ${linked ? `<button class="btn sm outline" onclick="goToDay()">✓ 연결됨 · 보기</button>`
+                 : `<button class="btn sm" onclick="linkReportToDay(${g.id}, '${attr(r.id)}')">연결</button>`}
+      </div>`;
+    }).join("")}</div>`;
+  }
+  function linkReportToDay(dayId, reportId) {
+    const r = reportCache[reportId] || REPORTS.find(x => x.id === reportId);
+    if (!r || !r.card) return;
+    const arr = loadArr("fm_days");
+    const g = arr.find(x => x.id === dayId);
+    if (!g) return;
+    if (g.subcards.some(sc => sc.type === "data" && sc.reportId === reportId)) { toast("이미 연결된 카드예요."); return; }
+    // 오프라인이거나 리포트를 못 불러올 때도 보이도록 요약을 같이 저장
+    g.subcards.push({ id: Date.now(), type: "data", linked: true, reportId, ...r.card, photos: [] });
+    if (!saveArr("fm_days", arr)) return;
+    toast(`${g.date}${g.loc ? " · " + g.loc : ""} 카드에 연결했어요.`);
+    renderLinkBox(r);
+    renderDays();
+  }
+  function goToDay() {
+    currentReport = null;
+    try { history.replaceState(null, "", location.pathname); } catch (e) {}
+    showPage("pocket");
+    renderReportView();
+  }
+  function chartShortName(c) {
+    // "2026 사과 홍로 상품 · 채널별 가격 지수" → "홍로 · 채널별"
+    const m = c.title.match(/(홍로|신고|후지|원황|아오리)/);
+    const kind = c.id.startsWith("channel") ? "채널별" : "연도별";
+    return `${m ? m[1] : ""} · ${kind}`;
+  }
+
+  // ---- 꺾은선 그래프 (SVG, 외부 라이브러리 없음) ----
+  function drawLineChart(el, chart) {
+    // 실제 표시 너비로 그려서 폰에서도 글씨 크기가 그대로 보이게
+    const W = Math.max(300, Math.round(el.clientWidth || 640)), H = W < 520 ? 220 : 270, P = { l: 34, r: 10, t: 12, b: 28 };
+    const all = chart.series.flatMap(s => s.points);
+    const xs = all.map(p => p[0]), ys = all.map(p => p[1]).concat([100]);
+    const x0 = Math.min(...xs), x1 = Math.max(...xs);
+    const y0 = Math.floor((Math.min(...ys) - 4) / 10) * 10, y1 = Math.ceil((Math.max(...ys) + 4) / 10) * 10;
+    const X = x => P.l + (x - x0) / (x1 - x0) * (W - P.l - P.r);
+    const Y = y => P.t + (1 - (y - y0) / (y1 - y0)) * (H - P.t - P.b);
+    const col = c => `var(--${c})`;
+    let g = "";
+    for (let y = y0; y <= y1; y += 10) {
+      g += `<line x1="${P.l}" x2="${W - P.r}" y1="${Y(y)}" y2="${Y(y)}" style="stroke:var(--line)" stroke-width="${y === 100 ? 1.5 : 1}" ${y === 100 ? "" : 'stroke-dasharray="2 3"'}/>`;
+      g += `<text x="${P.l - 6}" y="${Y(y) + 4}" text-anchor="end" font-size="11" style="fill:var(--faint)">${y}</text>`;
+    }
+    for (let x = Math.ceil(x0 / 10) * 10; x <= x1; x += 10) {
+      g += `<text x="${X(x)}" y="${H - 10}" text-anchor="middle" font-size="11" style="fill:var(--faint)">${x === 0 ? "추석" : (x < 0 ? "D" + x : "D+" + x)}</text>`;
+    }
+    if (x0 <= 0 && x1 >= 0) g += `<line x1="${X(0)}" x2="${X(0)}" y1="${P.t}" y2="${H - P.b}" style="stroke:var(--warn)" stroke-dasharray="4 3" stroke-width="1.2"/>`;
+    const lines = chart.series.map(s => `<polyline fill="none" style="stroke:${col(s.color)}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="${s.points.map(p => `${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join(" ")}"/>`).join("");
+    el.innerHTML = `
+      <div class="chart-legend">${chart.series.map(s => `<span><i style="background:${col(s.color)}"></i>${escapeHtml(s.name)}</span>`).join("")}</div>
+      <div class="chart-wrap">
+        <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${attr(chart.title)}">
+          ${g}${lines}
+          <line class="guide" y1="${P.t}" y2="${H - P.b}" style="stroke:var(--sub)" stroke-width="1" visibility="hidden"/>
+          <g class="dots"></g>
+          <rect x="${P.l}" y="${P.t}" width="${W - P.l - P.r}" height="${H - P.t - P.b}" fill="transparent"/>
+        </svg>
+        <div class="chart-tip"></div>
+      </div>`;
+    const svg = el.querySelector("svg"), tip = el.querySelector(".chart-tip"), guide = svg.querySelector(".guide"), dots = svg.querySelector(".dots");
+    const hide = () => { tip.style.display = "none"; guide.setAttribute("visibility", "hidden"); dots.innerHTML = ""; };
+    const move = ev => {
+      const pt = ev.touches ? ev.touches[0] : ev;
+      const box = svg.getBoundingClientRect();
+      const vx = (pt.clientX - box.left) / box.width * W;
+      const d = Math.round(x0 + (vx - P.l) / (W - P.l - P.r) * (x1 - x0));
+      if (d < x0 || d > x1) return hide();
+      const vals = chart.series.map(s => {
+        const p = s.points.reduce((a, b) => Math.abs(b[0] - d) < Math.abs(a[0] - d) ? b : a);
+        return { s, p, near: Math.abs(p[0] - d) <= 2 };
+      }).filter(v => v.near);
+      if (!vals.length) return hide();
+      guide.setAttribute("x1", X(d)); guide.setAttribute("x2", X(d)); guide.setAttribute("visibility", "visible");
+      dots.innerHTML = vals.map(v => `<circle cx="${X(v.p[0])}" cy="${Y(v.p[1])}" r="4" style="fill:${col(v.s.color)};stroke:var(--surface)" stroke-width="2"/>`).join("");
+      tip.innerHTML = `<b>${d === 0 ? "추석 당일" : (d < 0 ? "추석 " + (-d) + "일 전" : "추석 " + d + "일 후")}</b><br>` + vals.map(v => `${escapeHtml(v.s.name)} ${v.p[1]}`).join("<br>");
+      tip.style.display = "block";
+      const left = X(d) / W * box.width;
+      tip.style.left = Math.min(Math.max(left + 10, 0), box.width - tip.offsetWidth) + "px";
+    };
+    svg.addEventListener("mousemove", move);
+    svg.addEventListener("touchmove", move, { passive: true });
+    svg.addEventListener("touchstart", move, { passive: true });
+    svg.addEventListener("mouseleave", hide);
+  }
+  window.addEventListener("hashchange", () => {
+    const m = location.hash.match(/^#report\/(.+)$/);
+    if (m) openReport(decodeURIComponent(m[1]));
+  });
+
   // ---- init ----
   renderTabs();
   let startTab = "pocket";
   try { const saved = localStorage.getItem("fm_lastTab"); if (saved) startTab = saved; } catch(e) {}
+  const hashReport = location.hash.match(/^#report\/(.+)$/);
+  if (hashReport) { currentReport = decodeURIComponent(hashReport[1]); startTab = "reports"; }
   showPage(startTab);
   seedAllTemplatesSample();
   migrateChecklists();
   renderDays();
   renderMonthly();
   renderGlossary();
+  renderReportView();
+  loadReports();
   document.getElementById("nd-date").value = todayStr();
   document.getElementById("exportMonth").value = todayStr().slice(0,7);
 </script>

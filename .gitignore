@@ -1,0 +1,8 @@
+# 인증키 등 비밀값은 절대 커밋하지 않음
+.env
+**/.env
+# 수집한 원본 데이터는 로컬에만
+analysis/data/raw/
+.DS_Store
+~$*
+.venv/
